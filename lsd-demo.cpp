@@ -27,11 +27,11 @@ int cnvcvMat(cv::Mat *out, double in[]) {
 }
 
 int main(){
-	cv::Mat in, img;
+	cv::Mat in, img, lines;
 	int n=0;
 	double *out;
 	double dst[307200];
-	cv::VideoCapture cap(0);
+	cv::VideoCapture cap(1);
 	if (!cap.isOpened())	return -1;
 	
 	cv::namedWindow("dst");
@@ -39,18 +39,18 @@ int main(){
 	while(1) {
 		cap >> in;
 		cv::cvtColor(in, img, CV_BGR2GRAY);
+		lines = cv::Mat::zeros(in.rows,in.cols,in.type());
 		cnvDouble(&img, dst);
 
 		out = lsd(&n, dst, img.cols, img.rows);
 
 		for (int i=0; i<n; i++) {
-			cv::line(in,cv::Point( (int)out[7*i+0] , (int)out[7*i+1] ),cv::Point((int)out[7*i+2],(int)out[7*i+3]),cv::Scalar( 0, 0, 255 ),1,0);
+			cv::line(lines,cv::Point( (int)out[7*i+0] , (int)out[7*i+1] ),cv::Point((int)out[7*i+2],(int)out[7*i+3]),cv::Scalar( 255, 255, 255 ),1,0);
 		}
-		cv::imshow("dst",in);
+		cv::imshow("dst",lines);
 
 		if (cv::waitKey(100)!=-1)	break;
 	}
-	
 	return 0;
 }
 
